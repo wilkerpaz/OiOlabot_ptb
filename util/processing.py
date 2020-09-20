@@ -65,7 +65,6 @@ class BatchProcess(threading.Thread):
                         print('daily_liturgy')
                         if date_published > date_last_url and post.link != last_url \
                                 and post.daily_liturgy != '':
-                            print(post.link)
                             message = post.title + '\n' + post.daily_liturgy
                             result = self.send_newest_messages(message, url)
                             if post == feed[-1] and result:
@@ -94,6 +93,7 @@ class BatchProcess(threading.Thread):
                 chat_id = int(self.db.get_value_name_key(name, 'chat_id'))
                 if chat_id:
                     try:
+                        print(chat_id, message)
                         self.bot.send_message(chat_id=chat_id, text=message, parse_mode='html')
                         return True
                     except TelegramError as e:
