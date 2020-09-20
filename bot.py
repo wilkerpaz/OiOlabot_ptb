@@ -723,7 +723,6 @@ def stop(update, context):
     update.message.reply_text(message)
 
 
-@run_async
 def loop_parse(_):
     BatchProcess(db=db, bot=dp.bot)
     job_queue.run_once(callback=loop_parse, when=10, name='loop_feed')
