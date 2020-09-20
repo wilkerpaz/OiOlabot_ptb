@@ -24,6 +24,7 @@ class BatchProcess(threading.Thread):
         self.db = db
         self.bot = bot
         self.run()
+        print(f'Start processing {self.bot.username}')
 
     def run(self):
         if self._finished.isSet():
