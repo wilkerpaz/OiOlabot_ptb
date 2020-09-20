@@ -6,7 +6,7 @@ from threading import Thread as RunningThread
 
 import threading
 
-from telegram import error
+from telegram.error import BadRequest, TelegramError
 
 from util.datehandler import DateHandler
 from util.feedhandler import FeedHandler
@@ -50,7 +50,6 @@ class BatchProcess(threading.Thread):
         if not self._finished.isSet():
             try:
                 feed = FeedHandler.parse_feed(url, 4)
-                print(url)
                 for post in feed:
                     if not hasattr(post, "published") and not hasattr(post, "daily_liturgy"):
                         print('not published', url)
@@ -76,8 +75,9 @@ class BatchProcess(threading.Thread):
                     else:
                         pass
                 return True, url
-            except:
-                print('update_feed', url)
+            except TelegramError as e:
+                print('except update_feed', url)
+                print(e)
                 return False, url, 'update_feed'
 
     def update_url(self, url, last_update, last_url):
@@ -93,16 +93,16 @@ class BatchProcess(threading.Thread):
                     try:
                         self.bot.send_message(chat_id=chat_id, text=message, parse_mode='html')
                         return True
-                    except error as e:
-                        print(e)
-                        logger.info('Error ' + e + ' when send message for chat_id ' + str(chat_id))
-                        self.error(chat_id=chat_id, error=e)
-                        return None
+                    except TelegramError as e:
+                        print(e.message, chat_id)
+                        # logger.info('Error ' + e + ' when send message for chat_id ' + str(chat_id))
+                        self.errors(chat_id=chat_id, error=e)
+                        continue
 
-    def error(self, chat_id, error):
+    def errors(self, chat_id, error):
         """ Error handling """
         try:
-            if error.ID in ['CHANNEL_INVALID', 'PEER_ID_INVALID', 'CHAT_WRITE_FORBIDDEN', 'USER_IS_BLOCKED']:
+            if error.message in ['Chat not found']:
                 print(self.db.disable_url_chat(chat_id))
 
                 logger.error('disable chat_id %s from chat list' % chat_id)

@@ -202,7 +202,6 @@ def left_chat_member(update, context):
 
 
 # Welcome a user to the chat
-@run_async
 def goodbye(update, _):
     """ Sends goodbye message when a user left the chat """
     chat_id = update.message.chat.id
