@@ -724,8 +724,9 @@ def stop(update, context):
 
 
 def loop_parse(_):
-    BatchProcess(db=db, bot=dp.bot)
+    bp = BatchProcess(db=db, bot=dp.bot)
     job_queue.run_once(callback=loop_parse, when=10, name='loop_feed')
+    bp.stop()
 
 
 def main():
