@@ -769,5 +769,5 @@ def main():
 
 
 if __name__ == '__main__':
-    logger.info("Starting bot")
+    logger.info(f"Starting bot {__name__}")
     main()

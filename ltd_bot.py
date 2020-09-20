@@ -18,7 +18,7 @@ updater = Updater(TOKEN, use_context=True)
 dp = updater.dispatcher
 job_queue = updater.job_queue
 db = DatabaseHandler(2)
- 
+
 logging.basicConfig(level=LOG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 logger = logging.getLogger(__name__)
@@ -202,6 +202,7 @@ def left_chat_member(update, context):
 
 
 # Welcome a user to the chat
+@run_async
 def goodbye(update, _):
     """ Sends goodbye message when a user left the chat """
     chat_id = update.message.chat.id
@@ -768,5 +769,5 @@ def main():
 
 
 if __name__ == '__main__':
-    logger.info("Starting bot")
+    logger.info(f"Starting bot {__name__}")
     main()
