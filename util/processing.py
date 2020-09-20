@@ -61,8 +61,10 @@ class BatchProcess(threading.Thread):
                     date_last_url = DateHandler.parse_datetime(get_url_info['last_update'])
 
                     if hasattr(post, "daily_liturgy"):
+                        print('daily_liturgy')
                         if date_published > date_last_url and post.link != last_url \
                                 and post.daily_liturgy != '':
+                            print(post.link)
                             message = post.title + '\n' + post.daily_liturgy
                             result = self.send_newest_messages(message, url)
                             if post == feed[-1] and result:
