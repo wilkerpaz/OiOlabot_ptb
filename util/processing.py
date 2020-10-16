@@ -23,10 +23,9 @@ class BatchProcess(threading.Thread):
         self._finished = threading.Event()
         self.db = db
         self.bot = bot
-        self.run()
-        print(f'Start processing {self.bot.username}')
 
     def run(self):
+        print(f'Start processing {self.bot.username}')
         if self._finished.isSet():
             return
         self.parse_parallel()
@@ -62,7 +61,6 @@ class BatchProcess(threading.Thread):
                     date_last_url = DateHandler.parse_datetime(get_url_info['last_update'])
 
                     if hasattr(post, "daily_liturgy"):
-                        print('daily_liturgy')
                         if date_published > date_last_url and post.link != last_url \
                                 and post.daily_liturgy != '':
                             message = post.title + '\n' + post.daily_liturgy

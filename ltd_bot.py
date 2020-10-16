@@ -22,6 +22,9 @@ db = DatabaseHandler(2)
 logging.basicConfig(level=LOG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 logger = logging.getLogger(__name__)
+# logging.getLogger('telegram').setLevel(logging.WARNING)
+logging.getLogger('apscheduler').setLevel(logging.WARNING)
+# logging.getLogger('OiOlaBot').setLevel(logging.WARNING)
 
 help_text = 'Welcomes everyone that enters a group chat that this bot is a ' \
             'part of. By default, only the person who invited the bot into ' \
@@ -725,8 +728,8 @@ def stop(update, context):
 
 def loop_parse(_):
     bp = BatchProcess(db=db, bot=dp.bot)
-    job_queue.run_once(callback=loop_parse, when=10, name='loop_feed')
-    bp.stop()
+    bp.run()
+    job_queue.run_once(callback=loop_parse, when=15, name='loop_feed')
 
 
 def main():
