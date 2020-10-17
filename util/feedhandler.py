@@ -1,3 +1,5 @@
+import logging
+
 import feedparser
 import re
 
@@ -52,6 +54,7 @@ class FeedHandler(object):
             return False
 
         feed = feedparser.parse(url)
+        logging.getLogger(__name__).error(str(feed))
 
         # Check if result is empty
         if not feed.entries:
