@@ -558,8 +558,11 @@ def add_url(update, context):
 
     else:
         url = args[0]
-        chat_id = update.message.chat.id
-        chat_name = '@' + update.message.chat.username or update.message.from_user.first_name
+        user_name = '@' + update.message.chat.username if update.message.chat.username else None
+        first_name = update.message.from_user.first_name if update.message.from_user.first_name else None
+        chat_title = update.message.chat.title if update.message.chat.title else None
+
+        chat_name = user_name or chat_title or first_name
         user_id = update.message.from_user.id
         chat_info = {'chat_id': chat_id, 'chat_name': chat_name, 'user_id': user_id}
 
@@ -632,12 +635,13 @@ def remove_url(update, context):
 
     user_id = update.message.from_user.id
     chat_name = args[0] if len(args) == 2 else None
+    logger.error(f'remove_url {str(user_id)} {chat_name}')
     chat_id = db.get_chat_id_for_chat_name(user_id, chat_name) if chat_name else update.message.chat.id
     url = args[1] if len(args) == 2 else args[0]
 
     if chat_id is None:
         text = "Don't exist chat " + chat_name + '\n' + text
-        update.message.reply_text(text=text)
+        update.message.reply_text(text=text, parse_mode=ParseMode.HTML)
     else:
         exist_url = db.exist_url_to_chat(user_id, chat_id, url)
         if not exist_url:
