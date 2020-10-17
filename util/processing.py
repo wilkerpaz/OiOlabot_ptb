@@ -43,7 +43,7 @@ class BatchProcess(threading.Thread):
             time_ended = DateHandler.datetime.now()
             duration = time_ended - time_started
             info_bot = self.bot.get_me()
-            logger.info("Finished updating! Parsed " + str(len(urls)) +
+            logger.warning("Finished updating! Parsed " + str(len(urls)) +
                         " rss feeds in " + str(duration) + " ! " + info_bot.first_name)
 
     def update_feed(self, url):
@@ -76,11 +76,11 @@ class BatchProcess(threading.Thread):
                         pass
                 return True, url
             except TypeError as e:
-                logger.info(f"TypeError {url} {str(e)}")
+                logger.warning(f"TypeError {url} {str(e)}")
                 return False, url, 'update_feed'
 
             except TelegramError as e:
-                logger.info(f"except update_feed TelegramError {url} {str(e)}")
+                logger.warning(f"except update_feed TelegramError {url} {str(e)}")
                 return False, url, 'update_feed'
 
     def update_url(self, url, last_update, last_url):
