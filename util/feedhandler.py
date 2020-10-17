@@ -50,7 +50,7 @@ class FeedHandler(object):
         """
 
         url_pattern = re.compile(r"((http(s?))):\/\/.*")
-        logging.getLogger(__name__).error(str(url_pattern))
+        logging.getLogger(__name__).error(str(url_pattern.match(url)))
         if not url_pattern.match(url):
             return False
 
