@@ -167,7 +167,7 @@ class DatabaseHandler(object):
     '''return all url activated'''
 
     def get_chat_id_for_chat_name(self, user_id, chat_name):
-        names = self._find('user_url:*' + str(user_id))
+        names = self._find('user_url:*' + str(user_id) + '*')
         for name in names:
             chat_name_db = self.get_value_name_key(name, 'chat_name')
             chat_id_db = self.get_value_name_key(name, 'chat_id')
