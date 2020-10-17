@@ -49,11 +49,9 @@ class BatchProcess(threading.Thread):
     def update_feed(self, url):
         if not self._finished.isSet():
             try:
-                print(url)
                 get_url_info = self.db.get_update_url(url)
                 last_url = get_url_info['last_url']
                 date_last_url = DateHandler.parse_datetime(get_url_info['last_update'])
-                print(url, get_url_info)
                 feed = FeedHandler.parse_feed(url, 4, date_last_url)
                 for post in feed:
                     if not hasattr(post, "published") and not hasattr(post, "daily_liturgy"):
@@ -78,13 +76,11 @@ class BatchProcess(threading.Thread):
                         pass
                 return True, url
             except TypeError as e:
-                logger.warning('except update_feed' + url)
-                print(e)
+                logger.info(f"TypeError {url} {str(e)}")
                 return False, url, 'update_feed'
 
             except TelegramError as e:
-                logger.warning('except update_feed' + url)
-                print(e)
+                logger.info(f"except update_feed TelegramError {url} {str(e)}")
                 return False, url, 'update_feed'
 
     def update_url(self, url, last_update, last_url):
