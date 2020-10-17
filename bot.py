@@ -136,7 +136,7 @@ def _introduce(update, context):
     chat_id = update.message.chat.id
     first_name = update.effective_user.first_name
     chat_name = ''.join('@' if update.effective_chat.username or update.effective_user.username
-                        else update.from_user.first_name)
+                        else update.message.from_user.first_name)
     user_id = update.message.from_user.id
 
     logger.info(f'Invited by {user_id} to chat {chat_id} ({escape(chat_title)})')
@@ -519,7 +519,6 @@ def get_id(update, context):
 #         update.message.reply_text(text=text, parse_mode=ParseMode.HTML)
 
 
-@run_async
 def feed_url(update, url, **chat_info):
     arg_url = FeedHandler.format_url_string(string=url)
 
@@ -531,7 +530,7 @@ def feed_url(update, url, **chat_info):
         return
     chat_id = chat_info['chat_id']
     chat_name = chat_info.get('chat_name')
-    user_id = update.from_user.id
+    user_id = update.message.from_user.id
 
     result = db.set_url_to_chat(
         chat_id=str(chat_id), chat_name=str(chat_name), url=url, user_id=str(user_id))
@@ -539,12 +538,11 @@ def feed_url(update, url, **chat_info):
     if result:
         text = "I successfully added " + arg_url + " to your subscriptions!"
     else:
-        text = "Sorry, " + update.from_user.first_name + \
+        text = "Sorry, " + update.message.from_user.first_name + \
                "! I already have that url with stored in your subscriptions."
     update.message.reply_text(text)
 
 
-@run_async
 def add_url(update, context):
     """
     Adds a rss subscription to user
@@ -580,9 +578,9 @@ def add_url(update, context):
 
     else:
         url = args[0]
-        chat_id = update.chat.id
-        chat_name = '@' + update.chat.username or update.from_user.first_name
-        user_id = update.from_user.id
+        chat_id = update.message.chat.id
+        chat_name = '@' + update.message.chat.username or update.message.from_user.first_name
+        user_id = update.message.from_user.id
         chat_info = {'chat_id': chat_id, 'chat_name': chat_name, 'user_id': user_id}
 
         feed_url(update, url, **chat_info)
