@@ -66,7 +66,6 @@ def send_async(context, chat_id, text, **kwargs):
     context.bot.sendMessage(chat_id, text, **kwargs)
 
 
-@run_async
 def _check(update, _, override_lock=None):
     """
     Perform some hecks on the update. If checks were successful, returns True,
@@ -93,7 +92,6 @@ def _check(update, _, override_lock=None):
 
 
 # Welcome a user to the chat
-@run_async
 def _welcome(update, _, member=None):
     """ Welcomes a user to the chat """
     chat_id = update.message.chat.id
@@ -121,7 +119,6 @@ def _welcome(update, _, member=None):
 
 
 # Introduce the context to a chat its been added to
-@run_async
 def _introduce(update, context):
     """
     Introduces the bot to a chat its been added to and saves the user id of the
@@ -148,7 +145,6 @@ def _introduce(update, context):
     update.message.reply_text(text=text, parse_mode=ParseMode.HTML)
 
 
-@run_async
 def _set_daily_liturgy(update):
     chat_id = update.message.chat.id
     chat_name = '@' + update.message.chat.username or '@' + update.message.from_user.username \
@@ -168,7 +164,6 @@ help_text = help_text + help_text_feed
 
 
 # Print help text
-@run_async
 def start(update, context):
     """ Prints help text """
     me = context.bot
@@ -184,7 +179,6 @@ def start(update, context):
         update.message.reply_text(text=help_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
 
 
-@run_async
 def new_chat_members(update, context):
     me = context.bot
     for member in update.message.new_chat_members:
@@ -229,7 +223,6 @@ def goodbye(update, _):
 
 
 # Set custom message
-@run_async
 def set_welcome(update, context):
     """ Sets custom welcome message """
     args = context.args
@@ -255,7 +248,6 @@ def set_welcome(update, context):
 
 
 # Set custom message
-@run_async
 def set_goodbye(update, context):
     """ Enables and sets custom goodbye message """
     args = context.args
@@ -280,43 +272,36 @@ def set_goodbye(update, context):
     update.message.reply_text(text='Got it!')
 
 
-@run_async
 def disable_welcome(update, context):
     """ Disables the goodbye message """
     command_control(update, context, 'disable_welcome')
 
 
-@run_async
 def disable_goodbye(update, context):
     """ Disables the goodbye message """
     command_control(update, context, 'disable_goodbye')
 
 
-@run_async
 def lock(update, context):
     """ Locks the chat, so only the invitee can change settings """
     command_control(update, context, 'lock')
 
 
-@run_async
 def unlock(update, context):
     """ Unlocks the chat, so everyone can change settings """
     command_control(update, context, 'unlock')
 
 
-@run_async
 def quiet(update, context):
     """ Quiets the chat, so no error messages will be sent """
     command_control(update, context, 'quiet')
 
 
-@run_async
 def unquiet(update, context):
     """ Unquiets the chat """
     command_control(update, context, 'unquiet')
 
 
-@run_async
 def command_control(update, context, command):
     """ Disables the goodbye message """
     chat_id = update.message.chat_id
@@ -360,7 +345,6 @@ def new_chat_title(update, context):
     #         db.redis.hdel(key, name)
 
 
-@run_async
 def error(update, context, **kwargs):
     """ Error handling """
     print('error', update)
@@ -383,7 +367,6 @@ def error(update, context, **kwargs):
     #     logger.error("An error (%s) occurred: %s" % (type(e), e))
 
 
-@run_async
 def msg(update, context):
     args = context.args
     chat_id = update.message.chat_id
@@ -411,14 +394,13 @@ def msg(update, context):
     #         send_async(context, chat_id=group, text=text)
 
 
-@run_async
 def get_chat_by_username(update, context, user_name=None, chat_id=None):
     get_chat = None
     try:
         if user_name:
             user_name = user_name if user_name[0] == '@' else '@' + str(user_name)
-            chat_id = update.effective_chat.id if user_name == '@this' else None
-        get_chat = context.bot.get_chat(chat_id=chat_id or user_name)
+        chat_id = update.effective_chat.id if user_name == '@this' else user_name
+        get_chat = context.bot.get_chat(chat_id=chat_id)
     except BadRequest as e:
         if user_name:
             update.message.reply_text(f'I cant resolved username {user_name}')
@@ -436,7 +418,6 @@ def get_chat_by_username(update, context, user_name=None, chat_id=None):
     return user if get_chat else None
 
 
-@run_async
 def get_user_info(update, context):
     user_id = update.message.from_user.id
     args = context.args
@@ -456,7 +437,6 @@ def get_user_info(update, context):
             update.message.reply_text(text=text, parse_mode=ParseMode.HTML)
 
 
-@run_async
 def get_id(update, context):
     args = context.args[0]
     from_user = update.message.from_user
@@ -568,7 +548,7 @@ def add_url(update, context):
     elif len(args) == 2:
         chat_name = args[0]
         url = args[1]
-        chat_info = get_chat_by_username(update, chat_name)
+        chat_info = get_chat_by_username(update, context, chat_name)
         text = "I don't have access to chat " + chat_name + '\n' + text
         if chat_info is None:
             update.reply_text(text=text, quote=False)
@@ -586,7 +566,6 @@ def add_url(update, context):
         feed_url(update, url, **chat_info)
 
 
-@run_async
 def list_url(update, context):
     """
     Displays a list of all user subscriptions
@@ -610,7 +589,6 @@ def list_url(update, context):
         context.bot.sendMessage(chat_id=user_id, text=text, parse_mode=ParseMode.HTML)
 
 
-@run_async
 def all_url(update, context):
     """
     Displays a list of all user subscriptions
@@ -635,7 +613,6 @@ def all_url(update, context):
         context.bot.sendMessage(chat_id=chat_id, text=text, parse_mode=ParseMode.HTML)
 
 
-@run_async
 def remove_url(update, context):
     """
     Removes an rss subscription from user
@@ -684,7 +661,6 @@ def remove_url(update, context):
         db.del_names(names_url)
 
 
-@run_async
 def get_key(update, context):
     args = context.args
     if len(args) == 1:
@@ -694,7 +670,6 @@ def get_key(update, context):
             update.message.reply_text(text=str(text), parse_mode=ParseMode.HTML)
 
 
-@run_async
 def remove_key(update, context):
     args = context.args
     text = 'I removed '
@@ -704,7 +679,6 @@ def remove_key(update, context):
             update.message.reply_text(text=str(text + key), parse_mode=ParseMode.HTML)
 
 
-@run_async
 def stop(update, context):
     """
     Stops the bot from working
