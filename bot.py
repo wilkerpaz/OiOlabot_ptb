@@ -558,8 +558,11 @@ def add_url(update, context):
 
     else:
         url = args[0]
-        chat_id = update.message.chat.id
-        chat_name = '@' + update.message.chat.username or update.message.from_user.first_name
+        user_name = '@' + update.message.chat.username if update.message.chat.username else None
+        first_name = update.message.from_user.first_name if update.message.from_user.first_name else None
+        chat_title = update.message.chat.title if update.message.chat.title else None
+
+        chat_name = user_name or chat_title or first_name
         user_id = update.message.from_user.id
         chat_info = {'chat_id': chat_id, 'chat_name': chat_name, 'user_id': user_id}
 
