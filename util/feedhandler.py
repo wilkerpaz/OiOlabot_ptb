@@ -49,10 +49,10 @@ class FeedHandler(object):
         Checks wether the given url provides a news feed. Return True if news are available, else False
         """
 
-        # url_pattern = re.compile(r"((http(s?))):\/\/.*")
-        # logging.getLogger(__name__).error(str(url_pattern.match(url)))
-        # if not url_pattern.match(url):
-        #     return False
+        url_pattern = re.compile(r"((http(s?))):\/\/.*")
+        logging.getLogger(__name__).error(str(url_pattern.match(url)))
+        if not url_pattern.match(url):
+            return False
 
         feed = feedparser.parse(url)
         logging.getLogger(__name__).error(str(feed))
