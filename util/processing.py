@@ -55,8 +55,9 @@ class BatchProcess(threading.Thread):
                         logger.warning('not published' + url)
                         continue
                     # for index, post in enumerate(feed):
+                    print(url)
                     get_url_info = self.db.get_update_url(url)
-                    print(url, get_url_info)
+                    print(get_url_info)
                     date_published = DateHandler.parse_datetime(post.published)
                     last_url = get_url_info['last_url']
                     date_last_url = DateHandler.parse_datetime(get_url_info['last_update'])
