@@ -25,7 +25,7 @@ class BatchProcess(threading.Thread):
         self.bot = bot
 
     def run(self):
-        print(f'Start processing {self.bot.username}')
+        # print(f'Start processing {self.bot.username}')
         if self._finished.isSet():
             return
         self.parse_parallel()

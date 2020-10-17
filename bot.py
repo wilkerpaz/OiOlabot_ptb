@@ -638,23 +638,23 @@ def remove_url(update, context):
     if chat_id is None:
         text = "Don't exist chat " + chat_name + '\n' + text
         update.message.reply_text(text=text)
-        result = None
     else:
         exist_url = db.exist_url_to_chat(user_id, chat_id, url)
         if not exist_url:
+            chat_name = chat_name or update.message.from_user.first_name
             text = "Don't exist " + url + " for chat " + chat_name + '\n' + text
-            update.message.reply_text(text=text)
+            update.message.reply_text(text=text, parse_mode=ParseMode.HTML)
             result = None
         else:
             result = True if db.del_url_for_chat(chat_id, url) else None
 
-    if result:
-        message = "I removed " + url + " from your subscriptions!"
-    else:
-        message = "I can not find an entry with label " + \
-                  url + " in your subscriptions! Please check your subscriptions using " \
-                        "/list and use the delete command again!"
-    update.message.reply_text(text=message)
+        if result:
+            message = "I removed " + url + " from your subscriptions!"
+        else:
+            message = "I can not find an entry with label " + \
+                      url + " in your subscriptions! Please check your subscriptions using " \
+                            "/listurl and use the delete command again!"
+        update.message.reply_text(text=message)
 
     names_url = db.find_names(url)
     if names_url == 1:

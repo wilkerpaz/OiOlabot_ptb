@@ -56,7 +56,7 @@ class DatabaseHandler(object):
 
     '''set a name and key on database'''
     def del_names(self, names: list):
-        [self.redis.delete(name) for name in names]
+        return [self.redis.delete(name) for name in names]
 
     '''check if group exist'''
     def exist_group(self, chat_id):
@@ -185,4 +185,5 @@ class DatabaseHandler(object):
 
     def del_url_for_chat(self, chat_id, url):
         names = self._find('user_url:*' + str(chat_id) + '*' + url + '*')
-        self.del_names(names)
+        result = self.del_names(names)
+        return True if result[0] == 1 else None
