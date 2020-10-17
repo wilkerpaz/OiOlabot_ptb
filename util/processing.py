@@ -34,7 +34,7 @@ class BatchProcess(threading.Thread):
         if not self._finished.isSet():
             time_started = DateHandler.datetime.now()
             urls = self.db.get_urls_activated()
-            threads = 2
+            threads = 1
             pool = ThreadPool(threads)
             pool.map(self.update_feed, urls)
             pool.close()
