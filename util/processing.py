@@ -44,7 +44,7 @@ class BatchProcess(threading.Thread):
             duration = time_ended - time_started
             info_bot = self.bot.get_me()
             logger.info("Finished updating! Parsed " + str(len(urls)) +
-                           " rss feeds in " + str(duration) + " ! " + info_bot.first_name)
+                        " rss feeds in " + str(duration) + " ! " + info_bot.first_name)
 
     def update_feed(self, url):
         if not self._finished.isSet():
