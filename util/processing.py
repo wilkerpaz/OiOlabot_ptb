@@ -77,7 +77,7 @@ class BatchProcess(threading.Thread):
                     else:
                         pass
                 return True, url
-            except TelegramError as e:
+            except [TelegramError, TypeError] as e:
                 logger.warning('except update_feed' + url)
                 print(e)
                 return False, url, 'update_feed'
