@@ -59,17 +59,17 @@ class BatchProcess(threading.Thread):
                     get_url_info = self.db.get_update_url(url)
                     print(get_url_info)
                     date_published = DateHandler.parse_datetime(post.published)
-                    last_url = get_url_info['last_url']
+                    # last_url = get_url_info['last_url']
                     date_last_url = DateHandler.parse_datetime(get_url_info['last_update'])
 
                     if hasattr(post, "daily_liturgy"):
-                        if date_published > date_last_url and post.link != last_url \
+                        if date_published > date_last_url and post.link != get_url_info['last_url'] \
                                 and post.daily_liturgy != '':
                             message = post.title + '\n' + post.daily_liturgy
                             result = self.send_newest_messages(message, url)
                             if post == feed[-1] and result:
                                 self.update_url(url=url, last_update=date_published, last_url=post.link)
-                    elif date_published > date_last_url and post.link != last_url:
+                    elif date_published > date_last_url and post.link != get_url_info['last_url']:
                         message = post.title + '\n' + post.link
                         result = self.send_newest_messages(message, url)
                         if result:
