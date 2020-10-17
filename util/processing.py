@@ -43,8 +43,8 @@ class BatchProcess(threading.Thread):
             time_ended = DateHandler.datetime.now()
             duration = time_ended - time_started
             info_bot = self.bot.get_me()
-            logger.info("Finished updating! Parsed " + str(len(urls)) +
-                        " rss feeds in " + str(duration) + " ! " + info_bot.first_name)
+            logger.warning("Finished updating! Parsed " + str(len(urls)) +
+                           " rss feeds in " + str(duration) + " ! " + info_bot.first_name)
 
     def update_feed(self, url):
         if not self._finished.isSet():
@@ -52,7 +52,7 @@ class BatchProcess(threading.Thread):
                 feed = FeedHandler.parse_feed(url, 4)
                 for post in feed:
                     if not hasattr(post, "published") and not hasattr(post, "daily_liturgy"):
-                        print('not published', url)
+                        logger.warning('not published' + url)
                         continue
                     # for index, post in enumerate(feed):
                     get_url_info = self.db.get_update_url(url)
@@ -76,7 +76,7 @@ class BatchProcess(threading.Thread):
                         pass
                 return True, url
             except TelegramError as e:
-                print('except update_feed', url)
+                logger.warning('except update_feed' + url)
                 print(e)
                 return False, url, 'update_feed'
 
