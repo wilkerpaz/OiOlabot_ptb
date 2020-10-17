@@ -12,7 +12,7 @@ from util.datehandler import DateHandler
 from util.feedhandler import FeedHandler
 
 logger = logging.getLogger(__name__)
-logging.getLogger('processing').setLevel(logging.INFO)
+logging.getLogger('util.processing').setLevel(logging.ERROR)
 
 
 class BatchProcess(threading.Thread):
