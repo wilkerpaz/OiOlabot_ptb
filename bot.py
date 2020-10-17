@@ -180,7 +180,7 @@ def start(update, context):
     from_user = update.message.from_user.id
 
     if not bool(db.get_value_name_key('group:' + str(chat_id), 'chat_quiet')) \
-            or str(db.get_value_name_key('group:' + str(chat_id), 'chat_id')) == str(from_user):
+            or str(db.get_value_name_key('group:' + str(chat_id), 'chat_adm')) == str(from_user):
         update.message.reply_text(text=help_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
 
 
@@ -194,7 +194,6 @@ def new_chat_members(update, context):
             return _welcome(update, context, member)
 
 
-@run_async
 def left_chat_member(update, context):
     me = context.bot
     member = update.message.left_chat_member
@@ -205,7 +204,6 @@ def left_chat_member(update, context):
 
 
 # Welcome a user to the chat
-@run_async
 def goodbye(update, _):
     """ Sends goodbye message when a user left the chat """
     chat_id = update.message.chat.id
@@ -215,7 +213,7 @@ def goodbye(update, _):
     logger.info(f'{escape(first_name)} left chat {chat_id} ({escape(chat_title)})')
 
     # Pull the custom message for this chat from the database
-    text = db.set_name_key('group:' + str(chat_id), {'chat_goodbye': 'False'})
+    text = db.get_value_name_key('group:' + str(chat_id), 'chat_goodbye')
 
     # Goodbye was disabled
     if text == 'False':
