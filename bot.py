@@ -636,7 +636,7 @@ def remove_url(update, context):
     user_id = update.message.from_user.id
     chat_name = args[0] if len(args) == 2 else None
     chat_id = db.get_chat_id_for_chat_name(user_id, chat_name) if chat_name else update.message.chat.id
-    print(chat_id)
+    logger.error(f'remove_url {str(chat_id)}')
     url = args[1] if len(args) == 2 else args[0]
 
     if chat_id is None:
