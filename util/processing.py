@@ -91,7 +91,7 @@ class BatchProcess(threading.Thread):
                 chat_id = int(self.db.get_value_name_key(name, 'chat_id'))
                 if chat_id:
                     try:
-                        print(chat_id, message)
+                        # print(chat_id, message)
                         self.bot.send_message(chat_id=chat_id, text=message, parse_mode='html')
                         return True
                     except TelegramError as e:
