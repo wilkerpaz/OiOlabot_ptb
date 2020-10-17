@@ -49,18 +49,18 @@ class BatchProcess(threading.Thread):
     def update_feed(self, url):
         if not self._finished.isSet():
             try:
-                feed = FeedHandler.parse_feed(url, 4)
+                print(url)
+                get_url_info = self.db.get_update_url(url)
+                last_url = get_url_info['last_url']
+                date_last_url = DateHandler.parse_datetime(get_url_info['last_update'])
+                print(url, get_url_info)
+                feed = FeedHandler.parse_feed(url, 4, date_last_url)
                 for post in feed:
                     if not hasattr(post, "published") and not hasattr(post, "daily_liturgy"):
                         logger.warning('not published' + url)
                         continue
                     # for index, post in enumerate(feed):
-                    print(url)
-                    get_url_info = self.db.get_update_url(url)
-                    print(url, get_url_info)
                     date_published = DateHandler.parse_datetime(post.published)
-                    last_url = get_url_info['last_url']
-                    date_last_url = DateHandler.parse_datetime(get_url_info['last_update'])
 
                     if hasattr(post, "daily_liturgy"):
                         if date_published > date_last_url and post.link != last_url \
