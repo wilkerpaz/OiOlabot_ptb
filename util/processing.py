@@ -43,7 +43,7 @@ class BatchProcess(threading.Thread):
             time_ended = DateHandler.datetime.now()
             duration = time_ended - time_started
             info_bot = self.bot.get_me()
-            logger.warning("Finished updating! Parsed " + str(len(urls)) +
+            logger.info("Finished updating! Parsed " + str(len(urls)) +
                            " rss feeds in " + str(duration) + " ! " + info_bot.first_name)
 
     def update_feed(self, url):
