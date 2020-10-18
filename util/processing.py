@@ -1,5 +1,4 @@
 import logging
-from builtins import print
 
 from multiprocessing.dummy import Pool as ThreadPool
 from threading import Thread as RunningThread
@@ -25,7 +24,7 @@ class BatchProcess(threading.Thread):
         self.bot = bot
 
     def run(self):
-        # print(f'Start processing {self.bot.username}')
+        logger.info(f'Start processing {self.bot.username}')
         if self._finished.isSet():
             return
         self.parse_parallel()
@@ -94,11 +93,10 @@ class BatchProcess(threading.Thread):
                 chat_id = int(self.db.get_value_name_key(name, 'chat_id'))
                 if chat_id:
                     try:
-                        # print(chat_id, message)
                         self.bot.send_message(chat_id=chat_id, text=message, parse_mode='html')
                         return True
                     except TelegramError as e:
-                        print(e.message, chat_id)
+                        logger.warning(f"{str(e.message)} {str(chat_id)}")
                         # logger.info('Error ' + e + ' when send message for chat_id ' + str(chat_id))
                         self.errors(chat_id=chat_id, error=e)
                         continue
@@ -107,13 +105,13 @@ class BatchProcess(threading.Thread):
         """ Error handling """
         try:
             if error.message in ['Chat not found']:
-                print(self.db.disable_url_chat(chat_id))
+                logger.warning(f"{str(self.db.disable_url_chat(chat_id))}")
 
                 logger.error('disable chat_id %s from chat list' % chat_id)
                 # logger.error("An error occurred: %s" % error)
 
         except ValueError as e:
-            print('error ValueError', e)
+            logger.warning(f"error ValueError {str(e)}")
 
     def stop(self):
         """Stop this thread"""

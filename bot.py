@@ -347,7 +347,7 @@ def new_chat_title(update, context):
 
 def error(update, context, **kwargs):
     """ Error handling """
-    print('error', update)
+    logger.warning(f"def error {update}")
 
     # try:
     # print("####################################################################")
@@ -404,7 +404,7 @@ def get_chat_by_username(update, context, user_name=None, chat_id=None):
     except BadRequest as e:
         if user_name:
             update.message.reply_text(f'I cant resolved username {user_name}')
-        print(e)
+        logger.warning(f"{e}")
 
     user = {}
     if get_chat:
