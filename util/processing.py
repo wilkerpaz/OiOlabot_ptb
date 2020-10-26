@@ -1,4 +1,5 @@
 import logging
+from datetime import timedelta
 
 from multiprocessing.dummy import Pool as ThreadPool
 from threading import Thread as RunningThread
@@ -51,8 +52,8 @@ class BatchProcess(threading.Thread):
             try:
                 get_url_info = self.db.get_update_url(url)
                 last_url = get_url_info['last_url']
-                date_last_url = DateHandler.parse_datetime(get_url_info['last_update'])
-                feed = FeedHandler.parse_feed(url, 4, date_last_url + DateHandler.datetime.timedelta(days=-1))
+                date_last_url = DateHandler.parse_datetime(get_url_info['last_update']) + timedelta(days=-1)
+                feed = FeedHandler.parse_feed(url, 4, date_last_url)
                 for post in feed:
                     if not hasattr(post, "published") and not hasattr(post, "daily_liturgy"):
                         logger.warning('not published' + url)
