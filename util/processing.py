@@ -6,6 +6,7 @@ from threading import Thread as RunningThread
 import threading
 
 from telegram.error import BadRequest, TelegramError
+from telegram.vendor.ptb_urllib3.urllib3.exceptions import ConnectTimeoutError
 
 from util.datehandler import DateHandler
 from util.feedhandler import FeedHandler
@@ -75,11 +76,11 @@ class BatchProcess(threading.Thread):
                         pass
                 return True, url
             except TypeError as e:
-                logger.warning(f"TypeError {url} {str(e)}")
+                logger.error(f"TypeError {url} {str(e)}")
                 return False, url, 'update_feed'
 
             except TelegramError as e:
-                logger.warning(f"except update_feed TelegramError {url} {str(e)}")
+                logger.error(f"except update_feed TelegramError {url} {str(e)}")
                 return False, url, 'update_feed'
 
     def update_url(self, url, last_update, last_url):
@@ -95,8 +96,12 @@ class BatchProcess(threading.Thread):
                     try:
                         self.bot.send_message(chat_id=chat_id, text=message, parse_mode='html')
                         return True
+                    except ConnectTimeoutError as e:
+                        logger.error(f"{str(e)}")
+                        return False
+
                     except TelegramError as e:
-                        logger.warning(f"{str(e.message)} {str(chat_id)}")
+                        logger.error(f"{str(e.message)} {str(chat_id)}")
                         # logger.info('Error ' + e + ' when send message for chat_id ' + str(chat_id))
                         self.errors(chat_id=chat_id, error=e)
                         continue
@@ -105,13 +110,15 @@ class BatchProcess(threading.Thread):
         """ Error handling """
         try:
             if error.message in ['Chat not found']:
-                logger.warning(f"{str(self.db.disable_url_chat(chat_id))}")
+                logger.error(f"{str(self.db.disable_url_chat(chat_id))}")
 
                 logger.error('disable chat_id %s from chat list' % chat_id)
                 # logger.error("An error occurred: %s" % error)
 
+        except ConnectTimeoutError as e:
+            logger.error(f"error ConnectTimeoutError {str(e)}")
         except ValueError as e:
-            logger.warning(f"error ValueError {str(e)}")
+            logger.error(f"error ValueError {str(e)}")
 
     def stop(self):
         """Stop this thread"""
